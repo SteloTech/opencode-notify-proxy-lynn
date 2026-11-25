@@ -1,0 +1,32 @@
+{
+  "name": "opencode-mobile-notifications",
+  "version": "0.1.2",
+  "description": "Encrypted OpenCode iOS notifications when a session finishes or needs input",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anomalyco/opencode-ios.git",
+    "directory": "packages/notify-plugin"
+  },
+  "exports": {
+    ".": "./index.ts"
+  },
+  "files": [
+    "index.ts",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@opencode/plugin": "2.0.24",
+    "effect": "4.0.0-rc.112"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.3",
+    "typescript": "7.0.2"
+  }
+}

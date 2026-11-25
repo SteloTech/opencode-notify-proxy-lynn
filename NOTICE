@@ -1,0 +1,32 @@
+# Notice
+
+This repository contains code taken from the npm package
+[`opencode-mobile-notifications`](https://www.npmjs.com/package/opencode-mobile-notifications)
+version **0.1.2**, published by `mandarin3d <ryan@mandarin3d.com>`.
+
+## Upstream license status
+
+The upstream package declares **no license**. Its `package.json` has no `license` field, the
+published tarball contains no `LICENSE` file, and its `repository`, `homepage`, and `bugs`
+fields all point at `https://github.com/anomalyco/opencode-ios`, which returns **404**.
+
+Under copyright law, a work published without a license is subject to default copyright: the
+author reserves all rights. No license to copy, modify, or redistribute has been published.
+
+## What that means here
+
+- This repository does **not** grant you a license to the upstream code. There is no `LICENSE`
+  file, because we have no right to add one on the author's behalf.
+- The original code is reproduced here so the modified plugin can be installed directly.
+  Redistribution is not authorised by upstream.
+- The changes described in `CHANGES.md` are our own work.
+
+## If you need clear rights
+
+Contact the original publisher, or install the upstream package from npm and apply the proxy
+change yourself. `patch/proxy.patch` contains only the diff, if that is what you need.
+
+## Attribution
+
+Original: `opencode-mobile-notifications@0.1.2`, author `mandarin3d <ryan@mandarin3d.com>`,
+published 2026-10-31 via npm trusted publishing from GitHub Actions.

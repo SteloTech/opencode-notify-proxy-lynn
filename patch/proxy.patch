@@ -1,0 +1,123 @@
+--- a/src/encryption.ts
++++ b/src/encryption.ts
+@@ -1,4 +1,6 @@
+ import { createCipheriv, createECDH, createHash, ECDH, hkdfSync, randomBytes } from "node:crypto"
++import { request as httpRequest } from "node:http"
++import { connect as tlsConnect } from "node:tls"
+ import type { Plugin } from "@opencode/plugin"
+ import { Rpc } from "@opencode/plugin/rpc"
+ import { clip, fallback, type Notification, type Status } from "./notification.js"
+@@ -262,13 +264,7 @@
+       }
+     }
+     try {
+-      const response = await fetch(url, {
+-        method: "POST",
+-        headers: { "content-type": "application/json" },
+-        body,
+-        redirect: "error",
+-        signal: AbortSignal.any([...(options.signal ? [options.signal] : []), AbortSignal.timeout(10_000)]),
+-      })
++      const response = await postViaProxy(url, body, options.signal)
+       return { sent: response.ok, preview: body !== "{}", status: response.status }
+     } catch {
+       return { sent: false }
+@@ -277,3 +273,98 @@
+ 
+   return { accept, current, pair, post }
+ }
++
++/**
++ * POST through the local proxy by default.
++ *
++ * Bun's global `fetch` does not consistently honour HTTPS_PROXY, and on a filtered network the relay's DNS
++ * answers are poisoned or its IPs are reset, so a direct fetch never reaches it. Routing explicitly through the
++ * local proxy keeps notifications working without changing how the server process is launched.
++ *
++ * `OPENCODE_NOTIFY_PROXY` overrides the proxy; an empty value or `direct` bypasses it.
++ */
++const DEFAULT_PROXY = "http://127.0.0.1:7890"
++
++type Response = { ok: boolean; status: number }
++
++function proxyURL(): URL | undefined {
++  const raw = (process.env.OPENCODE_NOTIFY_PROXY ?? DEFAULT_PROXY).trim()
++  if (!raw || raw === "direct" || raw === "none") return undefined
++  try {
++    return new URL(raw)
++  } catch {
++    return undefined
++  }
++}
++
++/** Split `http://127.0.0.1:7890` into the host and port to open a CONNECT tunnel to. */
++function proxyEndpoint(proxy: URL): { host: string; port: number } {
++  return { host: proxy.hostname, port: Number(proxy.port) || (proxy.protocol === "https:" ? 443 : 80) }
++}
++
++function postViaProxy(url: string, body: string, signal?: AbortSignal): Promise<Response> {
++  const target = new URL(url)
++  const proxy = proxyURL()
++  if (!proxy) return directPost(target, body, signal)
++  const { host, port } = proxyEndpoint(proxy)
++  return new Promise<Response>((resolve, reject) => {
++    // Authenticate to the proxy only if it was configured with credentials.
++    const auth =
++      proxy.username || proxy.password
++        ? `Basic ${Buffer.from(
++            `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`,
++          ).toString("base64")}`
++        : undefined
++    const connect = httpRequest({
++      host,
++      port,
++      method: "CONNECT",
++      path: `${target.hostname}:${Number(target.port) || 443}`,
++      headers: auth ? { host: `${target.hostname}:${Number(target.port) || 443}`, "proxy-authorization": auth } : { host: `${target.hostname}:${Number(target.port) || 443}` },
++      signal,
++    })
++    connect.on("connect", (response, socket) => {
++      if (response.statusCode !== 200) {
++        socket.destroy()
++        // A refused tunnel is a failed send, not a crash: reuse the status when the proxy gave one.
++        reject(new Error(`Proxy CONNECT failed with ${response.statusCode}`))
++        return
++      }
++      const secured = tlsConnect({ socket, servername: target.hostname }, () => {
++        const headers = [
++          `POST ${target.pathname}${target.search} HTTP/1.1`,
++          `Host: ${target.hostname}`,
++          "content-type: application/json",
++          `content-length: ${Buffer.byteLength(body)}`,
++          "connection: close",
++          "",
++          "",
++        ].join("\r\n")
++        secured.write(headers)
++        secured.write(body)
++      })
++      let raw = ""
++      secured.setEncoding("utf8")
++      secured.on("data", (chunk) => {
++        raw += chunk
++      })
++      secured.on("end", () => {
++        const status = Number(/^HTTP\/1\.[01] (\d{3})/.exec(raw)?.[1] ?? 0)
++        resolve({ ok: status >= 200 && status < 300, status })
++      })
++      secured.on("error", reject)
++    })
++    connect.on("error", reject)
++    connect.end()
++  })
++}
++
++function directPost(target: URL, body: string, signal?: AbortSignal): Promise<Response> {
++  return fetch(target, {
++    method: "POST",
++    headers: { "content-type": "application/json" },
++    body,
++    redirect: "error",
++    signal: AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(10_000)]),
++  }).then((response) => ({ ok: response.ok, status: response.status }))
++}

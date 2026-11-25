@@ -1,7 +1,7 @@
 {
-  "name": "opencode-mobile-notifications",
+  "name": "opencode-notify-proxy",
   "version": "0.1.2",
-  "description": "Encrypted OpenCode iOS notifications when a session finishes or needs input",
+  "description": "Encrypted OpenCode iOS notifications when a session finishes or needs input, sent through a local HTTP proxy",
   "type": "module",
   "repository": {
     "type": "git",
@@ -22,11 +22,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@opencode/plugin": "2.0.24",
-    "effect": "4.0.0-rc.112"
+    "@opencode/plugin": "latest",
+    "effect": "^4.0.0-rc.112"
   },
   "devDependencies": {
-    "@types/node": "26.6.3",
-    "typescript": "7.0.2"
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
   }
 }

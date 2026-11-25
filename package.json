@@ -1,7 +1,7 @@
 {
-  "name": "opencode-notify-proxy",
+  "name": "opencode-notify-proxy-lynn",
   "version": "0.1.2",
-  "description": "Encrypted OpenCode iOS notifications when a session finishes or needs input, sent through a local HTTP proxy",
+  "description": "Encrypted OpenCode iOS notifications, sent through a local HTTP proxy. Independently maintained.",
   "type": "module",
   "repository": {
     "type": "git",

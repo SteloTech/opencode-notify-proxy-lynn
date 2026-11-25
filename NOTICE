@@ -1,12 +1,15 @@
 # Notice
 
-This repository contains code taken from the npm package
+The initial code in this repository comes from the npm package
 [`opencode-mobile-notifications`](https://www.npmjs.com/package/opencode-mobile-notifications)
 version **0.1.2**, published by `mandarin3d <ryan@mandarin3d.com>`.
 
-## Upstream license status
+Since then this repository has been maintained independently by SteloTech and may diverge from
+that origin.
 
-The upstream package declares **no license**. Its `package.json` has no `license` field, the
+## Origin license status
+
+The origin package declares **no license**. Its `package.json` has no `license` field, the
 published tarball contains no `LICENSE` file, and its `repository`, `homepage`, and `bugs`
 fields all point at `https://github.com/anomalyco/opencode-ios`, which returns **404**.
 
@@ -15,18 +18,17 @@ author reserves all rights. No license to copy, modify, or redistribute has been
 
 ## What that means here
 
-- This repository does **not** grant you a license to the upstream code. There is no `LICENSE`
+- This repository does **not** grant you a license to the origin code. There is no `LICENSE`
   file, because we have no right to add one on the author's behalf.
-- The original code is reproduced here so the modified plugin can be installed directly.
-  Redistribution is not authorised by upstream.
-- The changes described in `CHANGES.md` are our own work.
+- The origin code is reproduced so the plugin can be installed directly from here.
+  Redistribution is not authorised by the origin author.
+- Our own changes are described in `CHANGES.md`.
 
 ## If you need clear rights
 
-Contact the original publisher, or install the upstream package from npm and apply the proxy
-change yourself. `patch/proxy.patch` contains only the diff, if that is what you need.
+Contact the origin publisher, or use the npm package directly.
 
 ## Attribution
 
-Original: `opencode-mobile-notifications@0.1.2`, author `mandarin3d <ryan@mandarin3d.com>`,
+Origin: `opencode-mobile-notifications@0.1.2`, author `mandarin3d <ryan@mandarin3d.com>`,
 published 2026-10-31 via npm trusted publishing from GitHub Actions.

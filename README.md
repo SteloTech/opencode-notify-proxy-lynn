@@ -1,4 +1,4 @@
-# opencode-notify-proxy-LYNN
+# opencode-notify-proxy-lynn
 
 Encrypted [OpenCode](https://opencode.ai) iOS push notifications, sent through a local HTTP proxy.
 
@@ -22,7 +22,7 @@ Add this repository to your `plugins` list:
 ```jsonc
 // ~/.config/opencode/opencode.jsonc
 {
-  "plugins": ["github:SteloTech/opencode-notify-proxy-LYNN"]
+  "plugins": ["github:SteloTech/opencode-notify-proxy-lynn"]
 }
 ```
 
@@ -30,7 +30,7 @@ Or from a local checkout:
 
 ```jsonc
 {
-  "plugins": ["/absolute/path/to/opencode-notify-proxy-LYNN"]
+  "plugins": ["/absolute/path/to/opencode-notify-proxy-lynn"]
 }
 ```
 
